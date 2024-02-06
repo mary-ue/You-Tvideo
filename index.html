@@ -12,7 +12,7 @@
   <header class="header">
     <div class="container header__container">
       <a class="header__link" href="/">
-        <svg class="ader__logo" viewBox="0 0 240 32" role="img" aria-label="Логотип севиса You-Tvideo">
+        <svg class="header__logo" viewBox="0 0 240 32" role="img" aria-label="Логотип севиса You-Tvideo">
           <use xlink:href="/images/sprite.svg#logo-orange" />
         </svg>
       </a>
@@ -23,26 +23,77 @@
   <main>
     <section class="hero">
       <div class="container">
-
+        <a class="hero__link" href="/favorite.html">Избранное</a>
+        <svg class="hero__logo" viewBox="0 0 360 48" role="img" aria-label="Логотип севиса You-Tvideo">
+          <use xlink:href="/images/sprite.svg#logo-white" />
+        </svg>
+        <h1 class="hero__title">Смотри. Загружай. Создавай</h1>
+        <p class="hero__tagline">Удобный видеохостинг для тебя</p>
       </div>
     </section>
 
     <section class="search">
       <div class="container">
-
+        <form class="search__form">
+          <label class="search__label">
+            <input class="search__input" type="search">
+            <button class="search__btn" type="submit">поиск</button>
+          </label>
+        </form>
       </div>
     </section>
 
     <section class="video-list">
       <div class="container">
-
+        <h2 class="video-list__title">В тренде</h2>
+        <ul class="video-list__items">
+          <li class="video-list__item">
+            <article class="videl-card">
+              <a class="video-card__link" href="/video.html?id=15asd46ad4">
+                <img class="video-card__thumbnail" src="images/thumbnail.jpg"
+                  alt="Превью видео Философия Идущего к реке" />
+                <h3 class="video-card__title">Философия Идущего к реке</h3>
+                <p class="video-card__channel">Правое полушарие интроверта</p>
+                <p class="video-card__duration">31 мин 25 сек</p>
+              </a>
+              <button class="video-card__favorite" type="button"></button>
+            </article>
+          </li>
+          <li class="video-list__item">
+            <article class="videl-card">
+              <a class="video-card__link" href="/video.html?id=15asd46ad4">
+                <img class="video-card__thumbnail" src="images/thumbnail.jpg"
+                  alt="Превью видео Философия Идущего к реке" />
+                <h3 class="video-card__title">Философия Идущего к реке</h3>
+                <p class="video-card__channel">Правое полушарие интроверта</p>
+                <p class="video-card__duration">31 мин 25 сек</p>
+              </a>
+              <button class="video-card__favorite" type="button"></button>
+            </article>
+          </li>
+        </ul>
       </div>
     </section>
   </main>
 
   <footer class="footer">
-    <div class="container">
-
+    <div class="container footer__container">
+      <a class="footer__link" href="/">
+        <svg class="footer__logo" viewBox="0 0 360 48" role="img" aria-label="Логотип севиса You-Tvideo">
+          <use xlink:href="/images/sprite.svg#logo-white" />
+        </svg>
+      </a>
+      <ul class="footer__developers-list">
+        <li class="footer__developers-item">
+          Designer: <a class="footer__developers-link" href="https://t.me/Mrshmallowww" target="_blank"
+            rel="noopener">Anastasia Ilina</a>
+        </li>
+        <li class="footer__developers-item">
+          Developer <a class="footer__developers-link" href="https://t.me/mary_ue" target="_blank" rel="noopener">Maria
+            Soloveva</a>
+        </li>
+      </ul>
+      <p class="footer__copyright">© You-Tvideo, 2024</p>
     </div>
   </footer>
 </body>
