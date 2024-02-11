@@ -334,8 +334,6 @@ iframe {
   gap: 4px;
 }
 
-.video__link_active {}
-
 .video__link .video__no-favorite {
   display: block;
 }
@@ -355,4 +353,49 @@ iframe {
 .video__icon {
   width: 20px;
   height: 20px;
+}
+
+/* footer */
+
+.footer {
+  padding: 40px 0;
+  background: #FF6A00 url('/images/bg.webp') center/cover;
+  color: #fff;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+}
+
+.footer__container {
+  display: grid;
+  grid-template-columns: 360px max-content;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 30px
+}
+
+.footer__link:hover {
+  color: #ccc;
+}
+
+.footer__link_logo {
+  grid-column: 1 / 2;
+  grid-row: 1 / 3;
+}
+
+.footer__logo {}
+
+.footer__developers {
+  grid-column: 2 / 3;
+}
+
+.footer__developers-item {
+  margin-bottom: 8px;
+}
+
+.footer__developers-item:last-child {
+  margin-bottom: 0;
+}
+
+.footer__copyright {
+  grid-column: 2 / 3;
 }
