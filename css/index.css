@@ -87,7 +87,9 @@ iframe {
 }
 
 .container {
-  max-width: 1320px;
+  --container-width: 1260px;
+  --container-offset: 30px;
+  max-width: calc(var(--container-width) + (var(--container-offset) * 2));
   padding: 0 30px;
   margin: 0 auto;
 }
@@ -163,11 +165,13 @@ iframe {
   font-size: 70px;
   font-weight: 900;
   letter-spacing: 0.02em;
+  text-align: center;
 }
 
 .hero__tagline {
   font-size: 20px;
   letter-spacing: 0.02em;
+  text-align: center;
 }
 
 /* search */
@@ -184,6 +188,11 @@ iframe {
   border-radius: 40px;
   outline: none;
   font-size: 16px;
+  letter-spacing: 0.02em;
+}
+
+.search__input::placeholder {
+  color: #292d32;
   letter-spacing: 0.02em;
 }
 
@@ -300,7 +309,11 @@ iframe {
 .video__container {
   display: flex;
   justify-content: space-between;
-  gap: 84px;
+  gap: 34px;
+}
+
+.video__content {
+  max-width: 1048px;
 }
 
 .video__title {
@@ -327,7 +340,8 @@ iframe {
 }
 
 .video__link {
-  width: max-content;
+  flex-shrink: 0;
+  align-self: start;
   white-space: nowrap;
   display: flex;
   align-items: center;
@@ -382,8 +396,6 @@ iframe {
   grid-row: 1 / 3;
 }
 
-.footer__logo {}
-
 .footer__developers {
   grid-column: 2 / 3;
 }
@@ -398,4 +410,90 @@ iframe {
 
 .footer__copyright {
   grid-column: 2 / 3;
+}
+
+/* media */
+
+@media (max-width: 1024px) {
+  .container {
+    --container-width: 942px;
+  }
+
+  .hero {
+    padding: 40px 0 58px;
+  }
+
+  .hero__logo {
+    margin-bottom: 45px;
+    width: 200px;
+  }
+
+  .hero__title {
+    margin-bottom: 32px;
+    font-size: 50px;
+  }
+
+  .hero__link {
+    top: -16px;
+  }
+
+  .video-list__items {
+    row-gap: 32px;
+  }
+
+  .video-list {
+    padding: 60px 0;
+  }
+
+  .video-list__title {
+    margin-bottom: 40px;
+    font-size: 32px;
+  }
+
+  .video-card__title {
+    font-size: 24px;
+  }
+
+  .video-card__channel {
+    font-size: 20px;
+  }
+
+  .video-card__duration {
+    font-size: 16px;
+  }
+
+  .video {
+    padding: 60px 0;
+  }
+
+  .video__content {
+    max-width: 730px;
+  }
+
+  .video__title {
+    margin-bottom: 24px;
+    font-size: 32px;
+  }
+
+  .video__channel {
+    margin-bottom: 20px;
+    font-size: 20px;
+  }
+
+  .video__info {
+    font-size: 20px;
+  }
+
+  .video__description {
+    font-size: 20px;
+  }
+
+  .footer {
+    padding: 41px 0;
+    font-size: 16px;
+  }
+
+  .footer__container {
+    grid-template-columns: 305px max-content;
+  }
 }
