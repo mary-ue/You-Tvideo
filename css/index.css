@@ -26,6 +26,8 @@ body {
   overflow-x: hidden;
   min-width: 320px;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   font-family: Inter, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -37,6 +39,10 @@ body {
   letter-spacing: 0.02em;
   color: #292D32;
   background-color: #fff;
+}
+
+main {
+  flex-grow: 1;
 }
 
 img,

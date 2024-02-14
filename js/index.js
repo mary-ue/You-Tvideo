@@ -25,5 +25,38 @@ const fetchTrendingVideos = async () => {
   }
 };
 
-fetchTrendingVideos().then((videos) => console.log(videos));
+const displayVideo = (videos) => {
+  videoListItems.textContent = '';
 
+  const listVideos = videos.items.map((video) => {
+    const li = document.createElement('li');
+    li.classList.add('video-list__item');
+
+    li.innerHTML = `
+    <article class="video-card">
+      <a class="video-card__link" href="/video.html?id=${video.id}">
+        <img class="video-card__thumbnail" src="${
+          video.snippet.thumbnails.standard?.url ||
+          video.snippet.thumbnails.high?.url
+        }"
+          alt="Превью видео ${video.snippet.title}" />
+        <h3 class="video-card__title">${video.snippet.title}</h3>
+        <p class="video-card__channel">${video.snippet.channelTitle}</p>
+        <p class="video-card__duration">${video.contentDetails.duration}</p>
+      </a>
+      <button class="video-card__favorite video-card__favorite_active" type="button"
+        aria-label="Добавить в избранное, ${video.snippet.title}">
+        <svg class="video-card__icon">
+          <use class="star-o" xlink:href="/images/sprite.svg#star-ob" />
+          <use class="star" xlink:href="/images/sprite.svg#star" />
+        </svg>
+      </button>
+    </article>
+    `;
+    return li;
+  });
+
+  videoListItems.append(...listVideos);
+};
+
+fetchTrendingVideos().then(displayVideo);
