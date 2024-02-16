@@ -4,6 +4,32 @@ const SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search';
 
 const videoListItems = document.querySelector('.video-list__items');
 
+const convertISOToReadableDuration = (isoDuration) => {
+  const hoursMatch = isoDuration.match(/(\d+)H/);
+  const minutesMatch = isoDuration.match(/(\d+)M/);
+  const secondsMatch = isoDuration.match(/(\d+)S/);
+
+  const hours = hoursMatch ? parseInt(hoursMatch[1]) : 0;
+  const minutes = minutesMatch ? parseInt(minutesMatch[1]) : 0;
+  const seconds = secondsMatch ? parseInt(secondsMatch[1]) : 0;
+
+  let result = '';
+
+  if (hours > 0) {
+    result += `${hours} ч `;
+  }
+
+  if (minutes > 0) {
+    result += `${minutes} мин `;
+  }
+
+  if (seconds > 0) {
+    result += `${seconds} сек`;
+  }
+
+  return result.trim();
+};
+
 const fetchTrendingVideos = async () => {
   try {
     const url = new URL(VIDEOS_URL);
@@ -42,7 +68,9 @@ const displayVideo = (videos) => {
           alt="Превью видео ${video.snippet.title}" />
         <h3 class="video-card__title">${video.snippet.title}</h3>
         <p class="video-card__channel">${video.snippet.channelTitle}</p>
-        <p class="video-card__duration">${video.contentDetails.duration}</p>
+        <p class="video-card__duration">${convertISOToReadableDuration(
+          video.contentDetails.duration
+        )}</p>
       </a>
       <button class="video-card__favorite video-card__favorite_active" type="button"
         aria-label="Добавить в избранное, ${video.snippet.title}">
