@@ -2,6 +2,9 @@ const API_KEY = '';
 const VIDEOS_URL = 'https://www.googleapis.com/youtube/v3/videos';
 const SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search';
 
+const favoriteIds = JSON.parse(localStorage.getItem('favoriteYT') || '[]');
+console.log(favoriteIds);
+
 const videoListItems = document.querySelector('.video-list__items');
 
 const convertISOToReadableDuration = (isoDuration) => {
@@ -72,8 +75,11 @@ const displayVideo = (videos) => {
           video.contentDetails.duration
         )}</p>
       </a>
-      <button class="video-card__favorite video-card__favorite_active" type="button"
-        aria-label="Добавить в избранное, ${video.snippet.title}">
+      <button class="video-card__favorite favorite ${
+        favoriteIds.includes(video.id) ? 'active' : ''
+      }" type="button"
+        aria-label="Добавить в избранное, ${video.snippet.title}"
+        data-video-id="${video.id}">
         <svg class="video-card__icon">
           <use class="star-o" xlink:href="/images/sprite.svg#star-ob" />
           <use class="star" xlink:href="/images/sprite.svg#star" />
@@ -87,4 +93,26 @@ const displayVideo = (videos) => {
   videoListItems.append(...listVideos);
 };
 
-fetchTrendingVideos().then(displayVideo);
+const init = () => {
+  fetchTrendingVideos().then(displayVideo);
+
+  document.body.addEventListener('click', ({ target }) => {
+    const itemFavorite = target.closest('.favorite');
+
+    if (itemFavorite) {
+      const videoId = itemFavorite.dataset.videoId;
+
+      if (favoriteIds.includes(videoId)) {
+        favoriteIds.splice(favoriteIds.indexOf(videoId), 1);
+        localStorage.setItem('favoriteYT', JSON.stringify(favoriteIds));
+        itemFavorite.classList.remove('active');
+      } else {
+        favoriteIds.push(videoId);
+        localStorage.setItem('favoriteYT', JSON.stringify(favoriteIds));
+        itemFavorite.classList.add('active');
+      }
+    }
+  });
+};
+
+init();
