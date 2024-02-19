@@ -33,6 +33,17 @@ const convertISOToReadableDuration = (isoDuration) => {
   return result.trim();
 };
 
+const formatDate = (isoString) => {
+  const date = new Date(isoString);
+  const formatter = new Intl.DateTimeFormat('ru-RU', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+
+  return formatter.format(date);
+};
+
 const fetchTrendingVideos = async () => {
   try {
     const url = new URL(VIDEOS_URL);
@@ -63,7 +74,7 @@ const fetchFavoriteVideos = async () => {
     const url = new URL(VIDEOS_URL);
     url.searchParams.append('part', 'contentDetails,id,snippet');
     url.searchParams.append('maxResults', 12);
-    url.searchParams.append('id', favoriteIds.join(','))
+    url.searchParams.append('id', favoriteIds.join(','));
     url.searchParams.append('key', API_KEY);
 
     const response = await fetch(url);
@@ -78,7 +89,26 @@ const fetchFavoriteVideos = async () => {
   }
 };
 
-const displayVideo = (videos) => {
+const fetchVideoData = async (id) => {
+  try {
+    const url = new URL(VIDEOS_URL);
+    url.searchParams.append('part', 'snippet,statistics');
+    url.searchParams.append('id', id);
+    url.searchParams.append('key', API_KEY);
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const displayListVideo = (videos) => {
   videoListItems.textContent = '';
 
   const listVideos = videos.items.map((video) => {
@@ -117,6 +147,47 @@ const displayVideo = (videos) => {
   videoListItems.append(...listVideos);
 };
 
+const displayVideo = ({ items: [video] }) => {
+  const videoElement = document.querySelector('.video');
+
+  videoElement.innerHTML = `
+  <div class="container">
+    <div class="video__player">
+      <iframe class="video__iframe" src="https://www.youtube.com/embed/${
+        video.id
+      }" frameborder="0" allowfullscreen
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+    </div>
+    <div class="video__container">
+      <div class="video__content">
+        <h2 class="video__title">${video.snippet.title}</h2>
+        <p class="video__channel">${video.snippet.channelTitle}</p>
+        <p class="video__info">
+          <span class="video__views">${parseInt(
+            video.statistics.viewCount
+          ).toLocaleString()} просмотр </span>
+          <span class="video__date">Дата премьеры: ${formatDate(
+            video.snippet.publishedAt
+          )}</span>
+        </p>
+        <p class="video__description">
+        ${video.snippet.description}
+        </p>
+      </div>
+      <button class="video__link favorite ${
+        favoriteIds.includes(video.id) ? 'active' : ''
+      }">
+        <span class="video__no-favorite">Избранное</span>
+        <span class="video__favorite">В избранном</span>
+        <svg class="video__icon">
+          <use xlink:href="/images/sprite.svg#star-ob" />
+        </svg>
+      </button>
+    </div>
+  </div>
+  `;
+};
+
 const init = () => {
   const currentPage = location.pathname.split('/').pop();
   const urlSearchParams = new URLSearchParams(location.search);
@@ -124,12 +195,12 @@ const init = () => {
   const searchQuery = urlSearchParams.get('q');
 
   if (currentPage === 'index.html' || currentPage === '') {
-    fetchTrendingVideos().then(displayVideo);
+    fetchTrendingVideos().then(displayListVideo);
   } else if (currentPage === 'video.html' && videoId) {
-    console.log(videoId);
+    fetchVideoData(videoId).then(displayVideo);
   } else if (currentPage === 'favorite.html') {
-    fetchFavoriteVideos().then(displayVideo);
-  } else if (currentPage === 'search.html') {
+    fetchFavoriteVideos().then(displayListVideo);
+  } else if (currentPage === 'search.html' && searchQuery) {
     console.log(currentPage);
   }
 
