@@ -2,10 +2,29 @@ const API_KEY = '';
 const VIDEOS_URL = 'https://www.googleapis.com/youtube/v3/videos';
 const SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search';
 
-const favoriteIds = JSON.parse(localStorage.getItem('favoriteYT') || '[]');
-console.log(favoriteIds);
+const router = new Navigo('/', { hash: true });
+const main = document.querySelector('main');
 
-const videoListItems = document.querySelector('.video-list__items');
+const favoriteIds = JSON.parse(localStorage.getItem('favoriteYT') || '[]');
+
+const preload = {
+  elem: document.createElement('div'),
+  text: '<p class="preload__text">Loading...</p>',
+  append() {
+    main.style.display = 'flex';
+    main.style.margin = 'auto';
+    main.append(this.elem);
+  },
+  remove() {
+    this.elem.remove();
+  },
+  init() {
+    this.elem.className = 'preload';
+    this.elem.innerHTML = this.text;
+  },
+};
+
+preload.init();
 
 const convertISOToReadableDuration = (isoDuration) => {
   const hoursMatch = isoDuration.match(/(\d+)H/);
@@ -188,21 +207,45 @@ const displayVideo = ({ items: [video] }) => {
   `;
 };
 
-const init = () => {
-  const currentPage = location.pathname.split('/').pop();
-  const urlSearchParams = new URLSearchParams(location.search);
-  const videoId = urlSearchParams.get('id');
-  const searchQuery = urlSearchParams.get('q');
+const indexRoute = async () => {
+  main.textContent = '';
+  preload.append();
+  const hero = createHero();
+  const search = createSearch();
+  const videos = await fetchTrendingVideos();
+  preload.remove();
+  const listVideo = createListVideo(videos);
+};
 
-  if (currentPage === 'index.html' || currentPage === '') {
-    fetchTrendingVideos().then(displayListVideo);
-  } else if (currentPage === 'video.html' && videoId) {
-    fetchVideoData(videoId).then(displayVideo);
-  } else if (currentPage === 'favorite.html') {
-    fetchFavoriteVideos().then(displayListVideo);
-  } else if (currentPage === 'search.html' && searchQuery) {
-    console.log(currentPage);
-  }
+const videoRoute = () => {};
+
+const favoriteRoute = () => {};
+
+const searchRoute = () => {};
+
+const init = () => {
+  router
+    .on({
+      '/': indexRoute,
+      '/video/:id': videoRoute,
+      '/favorite': favoriteRoute,
+      '/search': searchRoute,
+    })
+    .resolve();
+  // const currentPage = location.pathname.split('/').pop();
+  // const urlSearchParams = new URLSearchParams(location.search);
+  // const videoId = urlSearchParams.get('id');
+  // const searchQuery = urlSearchParams.get('q');
+
+  // if (currentPage === 'index.html' || currentPage === '') {
+  //   fetchTrendingVideos().then(displayListVideo);
+  // } else if (currentPage === 'video.html' && videoId) {
+  //   fetchVideoData(videoId).then(displayVideo);
+  // } else if (currentPage === 'favorite.html') {
+  //   fetchFavoriteVideos().then(displayListVideo);
+  // } else if (currentPage === 'search.html' && searchQuery) {
+  //   console.log(currentPage);
+  // }
 
   document.body.addEventListener('click', ({ target }) => {
     const itemFavorite = target.closest('.favorite');

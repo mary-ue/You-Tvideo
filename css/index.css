@@ -431,6 +431,17 @@ iframe {
   grid-column: 2 / 3;
 }
 
+.preload {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  margin: auto;
+}
+
+.preload__text {
+  color: #ff6a00;
+}
+
 /* media */
 
 @media (max-width: 1024px) {
