@@ -16,6 +16,8 @@ const preload = {
     main.append(this.elem);
   },
   remove() {
+    main.style.display = '';
+    main.style.margin = '';
     this.elem.remove();
   },
   init() {
@@ -127,8 +129,19 @@ const fetchVideoData = async (id) => {
   }
 };
 
-const displayListVideo = (videos) => {
-  videoListItems.textContent = '';
+const createListVideo = (videos, titleText, pagination) => {
+  const videoListSection = document.createElement('section');
+  videoListSection.classList.add('video-list');
+
+  const container = document.createElement('div');
+  container.classList.add('container');
+
+  const title = document.createElement('h2');
+  title.classList.add('video-list__title');
+  title.textContent = titleText;
+
+  const videoListItems = document.createElement('ul');
+  videoListItems.classList.add('video-list__items');
 
   const listVideos = videos.items.map((video) => {
     const li = document.createElement('li');
@@ -136,7 +149,7 @@ const displayListVideo = (videos) => {
 
     li.innerHTML = `
     <article class="video-card">
-      <a class="video-card__link" href="/video.html?id=${video.id}">
+      <a class="video-card__link" href="#/video/${video.id}">
         <img class="video-card__thumbnail" src="${
           video.snippet.thumbnails.standard?.url ||
           video.snippet.thumbnails.high?.url
@@ -164,6 +177,15 @@ const displayListVideo = (videos) => {
   });
 
   videoListItems.append(...listVideos);
+
+  if (pagination) {
+    // Todo pagination
+    console.log('pagination');
+  }
+
+  videoListSection.append(container);
+  container.append(title, videoListItems);
+  return videoListSection;
 };
 
 const displayVideo = ({ items: [video] }) => {
@@ -207,6 +229,56 @@ const displayVideo = ({ items: [video] }) => {
   `;
 };
 
+const createHero = () => {
+  const heroSection = document.createElement('section');
+  heroSection.className = 'hero';
+  heroSection.innerHTML = `
+    <div class="container">
+      <div class="hero__container">
+        <a class="hero__link" href="#/favorite">
+          <span class="hero__link-text">Избранное</span>
+          <svg class="hero__icon">
+            <use xlink:href="images/sprite.svg#star-ow"></use>
+          </svg>
+        </a>
+        <svg class="hero__logo" viewBox="0 0 360 48" role="img" aria-label="Логотип севиса You-Tvideo">
+          <use xlink:href="/images/sprite.svg#logo-white" />
+        </svg>
+        <h1 class="hero__title">Смотри. Загружай. Создавай</h1>
+        <p class="hero__tagline">Удобный видеохостинг для тебя</p>
+      </div>
+    </div>
+  `;
+  return heroSection;
+};
+
+const createSearch = () => {
+  const searchSection = document.createElement('section');
+  searchSection.className = 'search';
+  const container = document.createElement('div');
+  container.className = 'container';
+  const title = document.createElement('h2');
+  title.className = 'visually-hidden';
+  title.textContent = 'поиск';
+
+  const form = document.createElement('form');
+  form.className = 'search__form';
+
+  searchSection.append(container);
+  container.append(title, form);
+  form.innerHTML = `
+    <input class="search__input" name="search" type="search" placeholder="Найти видео...">
+    <button class="search__btn" type="submit">
+      <span>поиск</span>
+      <svg class="search__icon">
+        <use xlink:href="/images/sprite.svg#search" />
+      </svg>
+    </button>
+  `;
+
+  return searchSection;
+};
+
 const indexRoute = async () => {
   main.textContent = '';
   preload.append();
@@ -215,6 +287,7 @@ const indexRoute = async () => {
   const videos = await fetchTrendingVideos();
   preload.remove();
   const listVideo = createListVideo(videos);
+  main.append(hero, search, listVideo);
 };
 
 const videoRoute = () => {};
