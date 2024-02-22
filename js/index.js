@@ -129,6 +129,30 @@ const fetchVideoData = async (id) => {
   }
 };
 
+const fetchSearchVideos = async (searchQuery, page) => {
+  try {
+    const url = new URL(SEARCH_URL);
+    url.searchParams.append('part', 'snippet');
+    url.searchParams.append('q', searchQuery);
+    url.searchParams.append('type', 'video');
+    url.searchParams.append('key', API_KEY);
+
+    if (page) {
+      url.searchParams.append('pageToken', page);
+    }
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const createListVideo = (videos, titleText, pagination) => {
   const videoListSection = document.createElement('section');
   videoListSection.classList.add('video-list');
@@ -149,7 +173,9 @@ const createListVideo = (videos, titleText, pagination) => {
 
     li.innerHTML = `
     <article class="video-card">
-      <a class="video-card__link" href="#/video/${video.id}">
+      <a class="video-card__link" href="#/video/${
+        video.id.videoId || video.id
+      }">
         <img class="video-card__thumbnail" src="${
           video.snippet.thumbnails.standard?.url ||
           video.snippet.thumbnails.high?.url
@@ -157,9 +183,13 @@ const createListVideo = (videos, titleText, pagination) => {
           alt="Превью видео ${video.snippet.title}" />
         <h3 class="video-card__title">${video.snippet.title}</h3>
         <p class="video-card__channel">${video.snippet.channelTitle}</p>
-        <p class="video-card__duration">${convertISOToReadableDuration(
-          video.contentDetails.duration
-        )}</p>
+        ${
+          video.contantDetails
+            ? `<p class="video-card__duration">${convertISOToReadableDuration(
+                video.contentDetails.duration
+              )}</p>`
+            : ''
+        }
       </a>
       <button class="video-card__favorite favorite ${
         favoriteIds.includes(video.id) ? 'active' : ''
@@ -188,10 +218,11 @@ const createListVideo = (videos, titleText, pagination) => {
   return videoListSection;
 };
 
-const displayVideo = ({ items: [video] }) => {
-  const videoElement = document.querySelector('.video');
+const createVideo = (video) => {
+  const videoSection = document.createElement('section');
+  videoSection.classList.add('video');
 
-  videoElement.innerHTML = `
+  videoSection.innerHTML = `
   <div class="container">
     <div class="video__player">
       <iframe class="video__iframe" src="https://www.youtube.com/embed/${
@@ -227,6 +258,8 @@ const displayVideo = ({ items: [video] }) => {
     </div>
   </div>
   `;
+
+  return videoSection;
 };
 
 const createHero = () => {
@@ -279,6 +312,35 @@ const createSearch = () => {
   return searchSection;
 };
 
+const createHeader = () => {
+  const header = document.querySelector('.header');
+
+  if (header) {
+    return header;
+  }
+
+  const headerElem = document.createElement('header');
+  headerElem.classList.add('header');
+
+  headerElem.innerHTML = `
+  <div class="container header__container">
+    <a class="header__link" href="/">
+      <svg class="header__logo" viewBox="0 0 240 32" role="img" aria-label="Логотип севиса You-Tvideo">
+        <use xlink:href="/images/sprite.svg#logo-orange" />
+      </svg>
+    </a>
+    <a class="header__link header__link_favorite" href="/favorite.html">
+      <span class="header__link-text">Избранное</span>
+      <svg class="header__icon">
+        <use xlink:href="/images/sprite.svg#star-ob" />
+      </svg>
+    </a>
+  </div>
+  `;
+
+  return headerElem;
+};
+
 const indexRoute = async () => {
   main.textContent = '';
   preload.append();
@@ -286,11 +348,28 @@ const indexRoute = async () => {
   const search = createSearch();
   const videos = await fetchTrendingVideos();
   preload.remove();
-  const listVideo = createListVideo(videos);
+  const listVideo = createListVideo(videos, 'В тренде');
   main.append(hero, search, listVideo);
 };
 
-const videoRoute = () => {};
+const videoRoute = async (ctx) => {
+  const id = ctx.data.id;
+
+  main.textContent = '';
+  preload.append();
+  document.body.prepend(createHeader());
+  const search = createSearch();
+  const data = await fetchVideoData(id);
+  const video = data.items[0];
+  preload.remove();
+  const videoSection = createVideo(video);
+  main.append(search, videoSection);
+
+  const searchQuery = video.snippet.title;
+  const videos = await fetchSearchVideos(searchQuery);
+  const listVideo = createListVideo(videos, 'Похожие видео');
+  main.append(listVideo);
+};
 
 const favoriteRoute = () => {};
 

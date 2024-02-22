@@ -296,7 +296,7 @@ iframe {
 /* video page */
 
 .video {
-  padding-top: 80px;
+  padding: 80px 0 40px;
 }
 
 /* лайфхак для адаптивного изображения iframe */
@@ -493,7 +493,7 @@ iframe {
   }
 
   .video {
-    padding-top: 60px;
+    padding: 60px 30px;
   }
 
   .video__content {
@@ -552,7 +552,7 @@ iframe {
   }
 
   .video {
-    padding-top: 40px;
+    padding: 40px 20px;
   }
 
   .video__container {
