@@ -263,6 +263,12 @@ const createVideo = (video) => {
 };
 
 const createHero = () => {
+  const header = document.querySelector('.header');
+
+  if (header) {
+    header.remove();
+  }
+
   const heroSection = document.createElement('section');
   heroSection.className = 'hero';
   heroSection.innerHTML = `
@@ -324,12 +330,12 @@ const createHeader = () => {
 
   headerElem.innerHTML = `
   <div class="container header__container">
-    <a class="header__link" href="/">
+    <a class="header__link" href="#">
       <svg class="header__logo" viewBox="0 0 240 32" role="img" aria-label="Логотип севиса You-Tvideo">
         <use xlink:href="/images/sprite.svg#logo-orange" />
       </svg>
     </a>
-    <a class="header__link header__link_favorite" href="/favorite.html">
+    <a class="header__link header__link_favorite" href="#/favorite">
       <span class="header__link-text">Избранное</span>
       <svg class="header__icon">
         <use xlink:href="/images/sprite.svg#star-ob" />
@@ -371,7 +377,16 @@ const videoRoute = async (ctx) => {
   main.append(listVideo);
 };
 
-const favoriteRoute = () => {};
+const favoriteRoute = async () => {
+  document.body.prepend(createHeader());
+  main.textContent = '';
+  preload.append();
+  const search = createSearch();
+  const videos = await fetchFavoriteVideos();
+  preload.remove();
+  const listVideo = createListVideo(videos, 'Избранное');
+  main.append(search, listVideo);
+};
 
 const searchRoute = () => {};
 
