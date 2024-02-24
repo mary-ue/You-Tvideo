@@ -306,7 +306,7 @@ const createSearch = () => {
   searchSection.append(container);
   container.append(title, form);
   form.innerHTML = `
-    <input class="search__input" name="search" type="search" placeholder="Найти видео...">
+    <input class="search__input" name="search" type="search" placeholder="Найти видео..." required>
     <button class="search__btn" type="submit">
       <span>поиск</span>
       <svg class="search__icon">
@@ -314,6 +314,13 @@ const createSearch = () => {
       </svg>
     </button>
   `;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (form.search.value.trim()) {
+      router.navigate(`/search?q=${form.search.value}`);
+    }
+  });
 
   return searchSection;
 };
@@ -388,7 +395,26 @@ const favoriteRoute = async () => {
   main.append(search, listVideo);
 };
 
-const searchRoute = () => {};
+const searchRoute = async (ctx) => {
+  const searchQuery = ctx.params.q;
+  const page = ctx.params.page;
+
+  if (searchQuery) {
+    document.body.prepend(createHeader());
+    main.textContent = '';
+    preload.append();
+    const search = createSearch();
+    const videos = await fetchSearchVideos(searchQuery, page);
+    preload.remove();
+    const listVideo = createListVideo(videos, 'Результаты поиска', {
+      searchQuery,
+      next: videos.nextPageToken,
+      prev: videos.prevPageToken,
+    });
+
+    main.append(search, listVideo);
+  }
+};
 
 const init = () => {
   router
