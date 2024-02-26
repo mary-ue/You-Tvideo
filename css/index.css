@@ -325,6 +325,8 @@ iframe {
 
 .video__content {
   max-width: 1048px;
+  hyphens: auto;
+  overflow-wrap: anywhere;
 }
 
 .video__title {

@@ -192,12 +192,12 @@ const createListVideo = (videos, titleText, pagination) => {
         }
       </a>
       <button class="video-card__favorite favorite ${
-        favoriteIds.includes(video.id) ? 'active' : ''
+        favoriteIds.includes(video.id.videoId || video.id) ? 'active' : ''
       }" type="button"
         aria-label="Добавить в избранное, ${video.snippet.title}"
-        data-video-id="${video.id}">
+        data-video-id="${video.id.videoId || video.id}">
         <svg class="video-card__icon">
-          <use class="star-o" xlink:href="/images/sprite.svg#star-ob" />
+          <use class="star-o" xlink:href="/images/sprite.svg#star-bw" />
           <use class="star" xlink:href="/images/sprite.svg#star" />
         </svg>
       </button>
@@ -207,14 +207,34 @@ const createListVideo = (videos, titleText, pagination) => {
   });
 
   videoListItems.append(...listVideos);
-
-  if (pagination) {
-    // Todo pagination
-    console.log('pagination');
-  }
-
   videoListSection.append(container);
   container.append(title, videoListItems);
+
+  if (pagination) {
+    const paginationElem = document.createElement('div');
+    paginationElem.classList.add('pagination');
+
+
+
+    if (pagination.prev) {
+      const arrowPrev = document.createElement('a');
+      arrowPrev.classList.add('pagination__arrow');
+      arrowPrev.text = 'Предыдущая страница';
+      arrowPrev.href = `#search?q=${pagination.searchQuery}&page=${pagination.prev}`;
+      paginationElem.append(arrowPrev);
+    }
+
+    if (pagination.next) {
+      const arrowNext = document.createElement('a');
+      arrowNext.classList.add('pagination__arrow');
+      arrowNext.text = 'Следующая страница';
+      arrowNext.href = `#search?q=${pagination.searchQuery}&page=${pagination.next}`;
+      paginationElem.append(arrowNext);
+    }
+
+    videoListSection.append(paginationElem);
+  }
+
   return videoListSection;
 };
 
@@ -263,11 +283,11 @@ const createVideo = (video) => {
 };
 
 const createHero = () => {
-  const header = document.querySelector('.header');
+  // const header = document.querySelector('.header');
 
-  if (header) {
-    header.remove();
-  }
+  // if (header) {
+  //   header.remove();
+  // }
 
   const heroSection = document.createElement('section');
   heroSection.className = 'hero';
@@ -355,6 +375,7 @@ const createHeader = () => {
 };
 
 const indexRoute = async () => {
+  document.querySelector('.header')?.remove();
   main.textContent = '';
   preload.append();
   const hero = createHero();
