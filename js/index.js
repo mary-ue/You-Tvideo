@@ -214,12 +214,10 @@ const createListVideo = (videos, titleText, pagination) => {
     const paginationElem = document.createElement('div');
     paginationElem.classList.add('pagination');
 
-
-
     if (pagination.prev) {
       const arrowPrev = document.createElement('a');
       arrowPrev.classList.add('pagination__arrow');
-      arrowPrev.text = 'Предыдущая страница';
+      arrowPrev.text = 'ᐊ';
       arrowPrev.href = `#search?q=${pagination.searchQuery}&page=${pagination.prev}`;
       paginationElem.append(arrowPrev);
     }
@@ -227,7 +225,7 @@ const createListVideo = (videos, titleText, pagination) => {
     if (pagination.next) {
       const arrowNext = document.createElement('a');
       arrowNext.classList.add('pagination__arrow');
-      arrowNext.text = 'Следующая страница';
+      arrowNext.text = 'ᐅ';
       arrowNext.href = `#search?q=${pagination.searchQuery}&page=${pagination.next}`;
       paginationElem.append(arrowNext);
     }
